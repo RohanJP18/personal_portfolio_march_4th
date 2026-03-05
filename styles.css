@@ -212,24 +212,60 @@ body.home[data-typing-done] .linkedin-link {
 }
 
 /* Jobs page */
-.jobs-typing #jobs-typed {
-  white-space: pre-line;
-  text-align: left;
-}
-
 .jobs-typing {
   margin-top: 1.5rem;
   text-align: center;
 }
 
-.research-typing #research-typed {
-  white-space: pre-line;
+.jobs-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-bottom: 0.6rem;
+}
+
+.jobs-logo {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.jobs-line {
   text-align: left;
+  white-space: pre-line;
 }
 
 .research-typing {
   margin-top: 1.5rem;
   text-align: center;
+}
+
+.research-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-bottom: 0.6rem;
+}
+
+.research-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.research-line {
+  text-align: left;
+}
+
+.jobs-logo.logo-visible,
+.research-logo.logo-visible {
+  opacity: 1;
 }
 
 .page-body {
@@ -374,4 +410,38 @@ body.home[data-typing-done] .linkedin-link {
 .corner-dude.leaving.pos-top-left,
 .corner-dude.leaving.pos-top-right {
   transform: translateY(-140%);
+}
+
+/* Skip animations button */
+.skip-button {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  border: none;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  background: rgba(0, 0, 0, 0.72);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.skip-button img {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.skip-button:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+@media (max-width: 640px) {
+  .skip-button {
+    bottom: 1rem;
+  }
 }

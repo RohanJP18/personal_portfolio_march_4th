@@ -8,6 +8,7 @@
   var i = 0;
 
   function type() {
+    if (window.__skipAllAnimations) return;
     if (i < name.length) {
       el.textContent += name[i];
       i++;
@@ -22,64 +23,86 @@
   setTimeout(type, 600);
 })();
 
-// Jobs page typing animation (content)
+// Jobs page typing animation (content, with logos)
 (function () {
-  var jobsEl = document.getElementById('jobs-typed');
-  if (!jobsEl) return;
+  var lines = Array.prototype.slice.call(document.querySelectorAll('.jobs-line'));
+  if (!lines.length) return;
 
-  var cursor = jobsEl.nextElementSibling;
-  var text = [
-    'Abundant (YC F24): AI Research Intern. August - Present.',
-    'Abundant (YC F24): SWE Intern. Jun 2025 - August 2025.',
-    'Rayfield Systems: SWE Intern. Jun 2025 - August 2025.',
-    'Cognizant: Gen AI Intern. May 2025 - June 2025.',
-    'Demian Design: SWE Intern. April 2025 - June 2025.',
-    'Cratus Technology. AI Intern. May 2020 - Aug 2020.'
-  ].join('\n\n');
+  var texts = lines.map(function (el) { return el.getAttribute('data-text') || ''; });
+  var cursor = document.querySelector('.jobs-typing .cursor');
 
-  var i = 0;
+  var logos = Array.prototype.slice.call(document.querySelectorAll('.jobs-row .jobs-logo'));
+  var lineIndex = 0;
+  var charIndex = 0;
 
   function startJobsTyping() {
     function step() {
-      if (i <= text.length) {
-        jobsEl.textContent = text.slice(0, i);
-        i++;
+      if (window.__skipAllAnimations) return;
+      if (lines[0].dataset.skip === '1') return;
+
+      var currentText = texts[lineIndex] || '';
+      if (charIndex === 0 && logos[lineIndex]) {
+        logos[lineIndex].classList.add('logo-visible');
+      }
+      lines[lineIndex].textContent = currentText.slice(0, charIndex + 1);
+      charIndex++;
+
+      if (charIndex < currentText.length) {
         setTimeout(step, 35);
-      } else if (cursor && cursor.classList) {
-        cursor.classList.add('done');
+      } else {
+        lineIndex++;
+        charIndex = 0;
+        if (lineIndex < lines.length) {
+          setTimeout(step, 260);
+        } else if (cursor && cursor.classList) {
+          cursor.classList.add('done');
+        }
       }
     }
+
     setTimeout(step, 300);
   }
 
   window.__startJobsTyping = startJobsTyping;
 })();
 
-// Research page typing animation (content)
+// Research page typing animation (content, with logos)
 (function () {
-  var researchEl = document.getElementById('research-typed');
-  if (!researchEl) return;
+  var lines = Array.prototype.slice.call(document.querySelectorAll('.research-line'));
+  if (!lines.length) return;
 
-  var cursor = researchEl.nextElementSibling;
-  var text = [
-    'Harvard University (T.H. Chan School of Public Health): Applied AI Researcher.',
-    'Neuromorphic Computing Group: AI Researcher.',
-    'Artificial Intelligence Explainability Accountability Lab: AI Researcher.',
-    'Reality AI Lab: Gen AI Researcher.'
-  ].join('\n\n');
+  var texts = lines.map(function (el) { return el.getAttribute('data-text') || ''; });
+  var cursor = document.querySelector('.research-typing .cursor');
 
-  var i = 0;
+  var logos = Array.prototype.slice.call(document.querySelectorAll('.research-row .research-logo'));
+  var lineIndex = 0;
+  var charIndex = 0;
 
   function startResearchTyping() {
     function step() {
-      if (i <= text.length) {
-        researchEl.textContent = text.slice(0, i);
-        i++;
+      if (window.__skipAllAnimations) return;
+      if (lines[0].dataset.skip === '1') return;
+
+      var currentText = texts[lineIndex] || '';
+      if (charIndex === 0 && logos[lineIndex]) {
+        logos[lineIndex].classList.add('logo-visible');
+      }
+      lines[lineIndex].textContent = currentText.slice(0, charIndex + 1);
+      charIndex++;
+
+      if (charIndex < currentText.length) {
         setTimeout(step, 40);
-      } else if (cursor && cursor.classList) {
-        cursor.classList.add('done');
+      } else {
+        lineIndex++;
+        charIndex = 0;
+        if (lineIndex < lines.length) {
+          setTimeout(step, 260);
+        } else if (cursor && cursor.classList) {
+          cursor.classList.add('done');
+        }
       }
     }
+
     setTimeout(step, 300);
   }
 
@@ -95,6 +118,7 @@
     var i = 0;
 
     function step() {
+      if (el.dataset.skip === '1') return;
       if (i < text.length) {
         el.textContent += text[i];
         i++;
@@ -141,6 +165,90 @@
     var buildingBody = document.querySelector('.building-page-body');
     typeHeading('building-heading', 'Building', function () {
       if (buildingBody) buildingBody.classList.add('page-body-visible');
+    });
+  }
+})();
+
+// Global skip animations handler + button wiring
+(function () {
+  function skipAll() {
+    window.__skipAllAnimations = true;
+
+    // Home page name
+    var nameSpan = document.getElementById('typed-name');
+    if (nameSpan) {
+      var fullName = 'Sai Rohan Jayaprakash';
+      nameSpan.textContent = fullName;
+      var homeH1 = nameSpan.closest('h1');
+      if (homeH1) homeH1.classList.add('done');
+      var homeCursor = nameSpan.nextElementSibling;
+      if (homeCursor && homeCursor.classList) homeCursor.classList.add('done');
+      document.body.classList.add('typing-done');
+      document.body.setAttribute('data-typing-done', 'true');
+    }
+
+    // Helper to finalize heading and show body
+    function finishSection(headingId, label, bodySelector) {
+      var hSpan = document.getElementById(headingId);
+      if (hSpan) {
+        hSpan.dataset.skip = '1';
+        hSpan.textContent = label;
+        var hCursor = hSpan.nextElementSibling;
+        if (hCursor && hCursor.classList) hCursor.classList.add('done');
+      }
+      if (bodySelector) {
+        var body = document.querySelector(bodySelector);
+        if (body) body.classList.add('page-body-visible');
+      }
+    }
+
+    // Jobs section
+    finishSection('jobs-heading', 'Jobs', '.jobs-page-body');
+    var jobLines = document.querySelectorAll('.jobs-line');
+    if (jobLines.length) {
+      jobLines.forEach(function (el) {
+        el.dataset.skip = '1';
+        var full = el.getAttribute('data-text') || '';
+        el.textContent = full;
+      });
+      var jobsCursor = document.querySelector('.jobs-typing .cursor');
+      if (jobsCursor && jobsCursor.classList) jobsCursor.classList.add('done');
+      var jobLogos = document.querySelectorAll('.jobs-logo');
+      jobLogos.forEach(function (logo) {
+        logo.classList.add('logo-visible');
+      });
+    }
+
+    // Research section
+    finishSection('research-heading', 'Research', '.research-page-body');
+    var researchLines = document.querySelectorAll('.research-line');
+    if (researchLines.length) {
+      researchLines.forEach(function (el) {
+        el.dataset.skip = '1';
+        var full = el.getAttribute('data-text') || '';
+        el.textContent = full;
+      });
+      var researchCursor = document.querySelector('.research-typing .cursor');
+      if (researchCursor && researchCursor.classList) researchCursor.classList.add('done');
+      var researchLogos = document.querySelectorAll('.research-logo');
+      researchLogos.forEach(function (logo) {
+        logo.classList.add('logo-visible');
+      });
+    }
+
+    // Built + Building sections (headings + bodies only)
+    finishSection('built-heading', 'Built', '.built-page-body');
+    finishSection('building-heading', 'Building', '.building-page-body');
+  }
+
+  window.__skipAllAnimations = false;
+  window.__skipAnimations = skipAll;
+
+  var btn = document.querySelector('.skip-button');
+  if (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      skipAll();
     });
   }
 })();
