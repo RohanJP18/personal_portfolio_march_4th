@@ -34,6 +34,8 @@
   var logos = Array.prototype.slice.call(document.querySelectorAll('.jobs-row .jobs-logo'));
   var lineIndex = 0;
   var charIndex = 0;
+  var detailBox = document.getElementById('jobs-detail-text');
+  var detailWrapper = document.querySelector('.jobs-detail');
 
   function startJobsTyping() {
     function step() {
@@ -54,8 +56,16 @@
         charIndex = 0;
         if (lineIndex < lines.length) {
           setTimeout(step, 260);
-        } else if (cursor && cursor.classList) {
-          cursor.classList.add('done');
+        } else {
+          if (cursor && cursor.classList) {
+            cursor.classList.add('done');
+          }
+          if (detailBox && !detailBox.textContent) {
+            detailBox.textContent = 'Hover over a role to see description.';
+          }
+          if (detailWrapper) {
+            detailWrapper.classList.add('detail-visible');
+          }
         }
       }
     }
@@ -64,6 +74,18 @@
   }
 
   window.__startJobsTyping = startJobsTyping;
+
+  // Hover descriptions for jobs
+  if (detailBox) {
+    lines.forEach(function (el) {
+      function setDesc() {
+        var desc = el.getAttribute('data-description') || '';
+        detailBox.textContent = desc;
+      }
+      el.addEventListener('mouseenter', setDesc);
+      el.addEventListener('focus', setDesc);
+    });
+  }
 })();
 
 // Research page typing animation (content, with logos)
@@ -77,6 +99,8 @@
   var logos = Array.prototype.slice.call(document.querySelectorAll('.research-row .research-logo'));
   var lineIndex = 0;
   var charIndex = 0;
+  var detailBox = document.getElementById('research-detail-text');
+  var detailWrapper = document.querySelector('.research-detail');
 
   function startResearchTyping() {
     function step() {
@@ -97,8 +121,16 @@
         charIndex = 0;
         if (lineIndex < lines.length) {
           setTimeout(step, 260);
-        } else if (cursor && cursor.classList) {
-          cursor.classList.add('done');
+        } else {
+          if (cursor && cursor.classList) {
+            cursor.classList.add('done');
+          }
+          if (detailBox && !detailBox.textContent) {
+            detailBox.textContent = 'Hover over a role to see description.';
+          }
+          if (detailWrapper) {
+            detailWrapper.classList.add('detail-visible');
+          }
         }
       }
     }
@@ -107,6 +139,18 @@
   }
 
   window.__startResearchTyping = startResearchTyping;
+
+  // Hover descriptions for research entries
+  if (detailBox) {
+    lines.forEach(function (el) {
+      function setDesc() {
+        var desc = el.getAttribute('data-description') || '';
+        detailBox.textContent = desc;
+      }
+      el.addEventListener('mouseenter', setDesc);
+      el.addEventListener('focus', setDesc);
+    });
+  }
 })();
 
 // Page heading typing animations (Jobs, Research, Built, Building)
@@ -217,6 +261,14 @@
       jobLogos.forEach(function (logo) {
         logo.classList.add('logo-visible');
       });
+      var detailBox = document.getElementById('jobs-detail-text');
+      var detailWrapper = document.querySelector('.jobs-detail');
+      if (detailBox) {
+        detailBox.textContent = 'Hover over a role to see description.';
+      }
+      if (detailWrapper) {
+        detailWrapper.classList.add('detail-visible');
+      }
     }
 
     // Research section
@@ -234,6 +286,14 @@
       researchLogos.forEach(function (logo) {
         logo.classList.add('logo-visible');
       });
+      var rBox = document.getElementById('research-detail-text');
+      var rWrapper = document.querySelector('.research-detail');
+      if (rBox) {
+        rBox.textContent = 'Hover over a role to see description.';
+      }
+      if (rWrapper) {
+        rWrapper.classList.add('detail-visible');
+      }
     }
 
     // Built + Building sections (headings + bodies only)
